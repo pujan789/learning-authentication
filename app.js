@@ -1,11 +1,13 @@
-//jshint esversion:6
+import 'dotenv/config';
 import express from "express";
 import bodyParser from "body-parser";
 import { dirname } from "path";
 import ejs from "ejs"; // Import EJS package
 import { fileURLToPath } from "url";
 import mongoose, { model } from "mongoose";
-import encryption from "mongoose-encryption";
+import encrypt from "mongoose-encryption";
+
+
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -22,8 +24,8 @@ const userSchema = new mongoose.Schema({
   password: String,
 });
 
-const secret = "Thisisourlittlesecret.";
-userSchema.plugin(encrypt, {secret: secret, encryptedFields: ["password"]});
+
+userSchema.plugin(encrypt, { secret: process.env.SECRET, encryptedFields: ['password'] });
 
 const User = new mongoose.model("User", userSchema);
 
@@ -61,7 +63,7 @@ app.post("/login", async (req, res) => {
     }
   }
 
-  res.render("secrets");
+  res.redirect("/");
 });
 
 // Start the server
